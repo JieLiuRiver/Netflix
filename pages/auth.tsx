@@ -2,7 +2,6 @@ import Input from "@/components/Input";
 import { useCallback, useMemo, useState } from "react";
 import axios from 'axios'
 import { signIn } from 'next-auth/react'
-import { useRouter } from "next/router";
 
 import { FcGoogle } from 'react-icons/fc'
 import { FaGithub } from 'react-icons/fa'
@@ -10,22 +9,22 @@ import { FaGithub } from 'react-icons/fa'
 const ACTION_TYPE = {
     REGISTER: {
         NAME: "register",
+        TITLE: 'Register',
+        SUBMIT_TEXT: 'Sign Up',
+        TIP_TEXT: ' Already have an account?',
+        SWITCH_BUTTON_TEXT: 'Login'
+    },
+    LOGIN: {
+        NAME: 'login',
         TITLE: 'Sign in',
         SUBMIT_TEXT: 'Login',
         TIP_TEXT: 'First time using Netflix?',
         SWITCH_BUTTON_TEXT: 'Create an account'
-    },
-    LOGIN: {
-        NAME: 'login',
-        TITLE: 'Register',
-        SUBMIT_TEXT: 'Sign Up',
-        TIP_TEXT: 'Already have an account?',
-        SWITCH_BUTTON_TEXT: 'Login'
     }
 }
+const LOGIN_SUCCESS_CALLBACK_URL = '/profiles'
 
 const Auth = () => {
-    const router = useRouter()
     const [name, setName] = useState('')
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -44,14 +43,12 @@ const Auth = () => {
             await signIn('credentials', {
                 email,
                 password,
-                redirect: false,
-                callbackUrl: '/'
+                callbackUrl: LOGIN_SUCCESS_CALLBACK_URL
             })
-            router.push('/')
         } catch (error) {
             console.log(error)
         }
-    }, [email, password, router])
+    }, [email, password])
 
     const register = useCallback(async () => {
         try {
@@ -89,7 +86,7 @@ const Auth = () => {
     } = useMemo(() => {
         const isLogin = variant === ACTION_TYPE.LOGIN.NAME
         return {
-            isRegisterAction: !isLogin,
+            isRegisterAction: variant === ACTION_TYPE.REGISTER.NAME,
             title: isLogin ? ACTION_TYPE.LOGIN.TITLE : ACTION_TYPE.REGISTER.TITLE,
             submit: isLogin ? login : register,
             submitText: isLogin ? ACTION_TYPE.LOGIN.SUBMIT_TEXT : ACTION_TYPE.REGISTER.SUBMIT_TEXT,
@@ -139,7 +136,7 @@ const Auth = () => {
                         <div className="flex flex-row items-center gap-4 mt-8 justify-center">
                             <div
                                 onClick={() => signIn('google', {
-                                    callbackUrl: '/'
+                                    callbackUrl: LOGIN_SUCCESS_CALLBACK_URL
                                 })}
                                 className={thirdPlatformIconClassNames}
                             >
@@ -147,7 +144,7 @@ const Auth = () => {
                             </div>
                             <div
                                 onClick={() => signIn('github', {
-                                    callbackUrl: '/'
+                                    callbackUrl: LOGIN_SUCCESS_CALLBACK_URL
                                 })}
                                 className={thirdPlatformIconClassNames}
                             >
