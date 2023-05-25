@@ -1,6 +1,8 @@
 import { signOut } from "next-auth/react";
 import React, { useMemo } from "react";
 
+import useCurrentUser from '@/hooks/useCurrentUser';
+
 interface AccountMenuProps {
     visible?: boolean
 }
@@ -8,13 +10,14 @@ interface AccountMenuProps {
 const AccountMenu: React.FC<AccountMenuProps> = ({
     visible
 }) => {
+    const { data: currentUser } = useCurrentUser();
 
     const accountList = useMemo(() => ([
         {
             avatar: <img className="w-8 rounded-md" src="/images/default-blue.png" alt="" />,
-            name: 'UserName'
+            name: currentUser?.name
         },
-    ]), [])
+    ]), [currentUser?.name])
 
     if (!visible) {
         return null
