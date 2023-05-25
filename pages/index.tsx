@@ -2,6 +2,7 @@ import React from 'react'
 import { getSession } from 'next-auth/react'
 import { NextPageContext } from 'next'
 import NavBar from '@/components/Navbar';
+import Billboard from '@/components/Billboard';
 
 export async function getServerSideProps(context: NextPageContext) {
     const session = await getSession(context);
@@ -22,10 +23,9 @@ export async function getServerSideProps(context: NextPageContext) {
   
 
 const Home = () => {
-    // const { data: user } = useCurrentUser()
-
     return <>
         <NavBar />
+        <Billboard />
     </>
 }
 
