@@ -1,8 +1,10 @@
 import React from 'react'
 import { getSession } from 'next-auth/react'
 import { NextPageContext } from 'next'
+import useMovieList from '@/hooks/useMovieList';
 import NavBar from '@/components/Navbar';
 import Billboard from '@/components/Billboard';
+import MovieList from '@/components/MovieList';
 
 export async function getServerSideProps(context: NextPageContext) {
     const session = await getSession(context);
@@ -23,10 +25,16 @@ export async function getServerSideProps(context: NextPageContext) {
   
 
 const Home = () => {
-    return <>
-        <NavBar />
-        <Billboard />
-    </>
+  const { data: movies = [] } = useMovieList();
+
+  return <>
+      <NavBar />
+      <Billboard />
+      <div className="pb-40">
+        <MovieList title="Trending Now" data={movies} />
+        {/* <MovieList title="My List" data={favorites} /> */}
+    </div>
+  </>
 }
 
 export default Home
